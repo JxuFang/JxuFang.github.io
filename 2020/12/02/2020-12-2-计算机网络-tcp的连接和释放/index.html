@@ -1,0 +1,79 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="format-detection" content="telephone=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><link rel="icon" href="/images/icons/favicon-16x16.png?v=2.1.1" type="image/png" sizes="16x16"><link rel="icon" href="/images/icons/favicon-32x32.png?v=2.1.1" type="image/png" sizes="32x32"><meta name="description" content="tcp的三次握手和四次握手        TCP是面向连接的运输，这是因为在一个应用进程可以开始向另一个应用程序进程发送数据之前，这两个进程必须先互相“握手”，也就是互相发送某些特殊的报文段，以确认互相可以收到彼此发送的数据和建立确保数据传输的参数。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(计算机网络)TCP运输连接的建立和释放">
+<meta property="og:url" content="http://yoursite.com/2020/12/02/2020-12-2-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-tcp%E7%9A%84%E8%BF%9E%E6%8E%A5%E5%92%8C%E9%87%8A%E6%94%BE/index.html">
+<meta property="og:site_name" content="小旭的博客">
+<meta property="og:description" content="tcp的三次握手和四次握手        TCP是面向连接的运输，这是因为在一个应用进程可以开始向另一个应用程序进程发送数据之前，这两个进程必须先互相“握手”，也就是互相发送某些特殊的报文段，以确认互相可以收到彼此发送的数据和建立确保数据传输的参数。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img.rruu.net/image/5fcaf38c1cbc3">
+<meta property="og:image" content="https://img.rruu.net/image/5fcaf38c099ba">
+<meta property="og:image" content="https://img.rruu.net/image/5fcaf38c0b54a">
+<meta property="article:published_time" content="2020-12-02T10:49:55.920Z">
+<meta property="article:modified_time" content="2020-12-05T02:57:53.800Z">
+<meta property="article:author" content="房金旭">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img.rruu.net/image/5fcaf38c1cbc3"><title>(计算机网络)TCP运输连接的建立和释放 | 小旭的博客</title><link ref="canonical" href="http://yoursite.com/2020/12/02/2020-12-2-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-tcp%E7%9A%84%E8%BF%9E%E6%8E%A5%E5%92%8C%E9%87%8A%E6%94%BE/"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.12.1/css/all.min.css" type="text/css"><link rel="stylesheet" href="/css/index.css?v=2.1.1"><script>var Stun = window.Stun || {};
+var CONFIG = {
+  root: '/',
+  algolia: undefined,
+  fontIcon: {"prompt":{"success":"fas fa-check-circle","info":"fas fa-arrow-circle-right","warning":"fas fa-exclamation-circle","error":"fas fa-times-circle"},"copyBtn":"fas fa-copy"},
+  sidebar: {"offsetTop":"20px","tocMaxDepth":6},
+  header: {"enable":true,"showOnPost":false,"scrollDownIcon":false},
+  postWidget: {"endText":true},
+  nightMode: {"enable":true},
+  back2top: {"enable":true},
+  codeblock: {"style":"default","highlight":"light","wordWrap":false},
+  reward: false,
+  fancybox: false,
+  zoomImage: {"gapAside":"20px"},
+  galleryWaterfall: undefined,
+  lazyload: false,
+  pjax: undefined,
+  externalLink: {"icon":{"enable":true,"name":"fas fa-external-link-alt"}},
+  shortcuts: undefined,
+  prompt: {"copyButton":"复制","copySuccess":"复制成功","copyError":"复制失败"},
+  sourcePath: {"js":"js","css":"css","images":"images"},
+};
+
+window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 4.2.1"></head><body><div class="container" id="container"><header class="header" id="header"><div class="header-inner header-inner--height header-inner--bgcolor"><nav class="header-nav header-nav--sticky"><div class="header-nav-inner"><div class="header-nav-menubtn"><i class="fas fa-bars"></i></div><div class="header-nav-menu"><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/"><span class="header-nav-menu-item__icon"><i class="fas fa-home"></i></span><span class="header-nav-menu-item__text">首页</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/archives/"><span class="header-nav-menu-item__icon"><i class="fas fa-folder-open"></i></span><span class="header-nav-menu-item__text">归档</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/categories/"><span class="header-nav-menu-item__icon"><i class="fas fa-layer-group"></i></span><span class="header-nav-menu-item__text">分类</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/tags/"><span class="header-nav-menu-item__icon"><i class="fas fa-tags"></i></span><span class="header-nav-menu-item__text">标签</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/reading/"><span class="header-nav-menu-item__icon"><i class="fas fa-book"></i></span><span class="header-nav-menu-item__text">阅读</span></a></div></div><div class="header-nav-mode"><div class="mode"><div class="mode-track"><span class="mode-track-moon"></span><span class="mode-track-sun"></span></div><div class="mode-thumb"></div></div></div></div></nav></div></header><main class="main" id="main"><div class="main-inner"><div class="content-wrap" id="content-wrap"><div class="content" id="content"><!-- Just used to judge whether it is an article page--><div id="is-post"></div><div class="post"><header class="post-header"><h1 class="post-title">(计算机网络)TCP运输连接的建立和释放</h1><div class="post-meta"><span class="post-meta-item post-meta-item--createtime"><span class="post-meta-item__icon"><i class="far fa-calendar-plus"></i></span><span class="post-meta-item__info">发表于</span><span class="post-meta-item__value">2020-12-02</span></span><span class="post-meta-item post-meta-item--updatetime"><span class="post-meta-item__icon"><i class="far fa-calendar-check"></i></span><span class="post-meta-item__info">更新于</span><span class="post-meta-item__value">2020-12-05</span></span></div></header><div class="post-body">
+        <h2 id="tcp的三次握手和四次握手"   >
+          <a href="#tcp的三次握手和四次握手" class="heading-link"><i class="fas fa-link"></i></a>tcp的三次握手和四次握手</h2>
+      
+<p>TCP是面向连接的运输，这是因为在一个应用进程可以开始向另一个应用程序进程发送数据之前，这两个进程必须先互相“握手”，也就是互相发送某些特殊的报文段，以确认互相可以收到彼此发送的数据和建立确保数据传输的参数。</p>
+<a id="more"></a>
+<p>TCP的这种“连接”是一条逻辑连接，其共同状态仅保留在两个通信端系统的TCP程序中，因为TCP协议旨在端系统中运行，而不再中间的网络元素（路由器和链路层交换机）中运行，所以中间的网络元素不会维持TCP连接状态，中间路由器对TCP连接完全视而不见，它们看到的是数据报而不是连接。另外TCP连接是<strong>点对点</strong>的，即单个发送方和单个接受方之间的连接。</p>
+<p>那么下面让我们看看TCP连接是如何建立的。</p>
+<img src="https://img.rruu.net/image/5fcaf38c1cbc3" alt="picture" title="三报文握手" style="zoom: 50%;" />
+<p>发起连接的进程被称为<strong>客户进程</strong>，而另一个进程被称为<strong>服务器进程</strong>。假设主机A运行TCP客户进程，主机B运行TCP服务器进程，开始两端的TCP进程都处于CLOSRED状态。</p>
+<ol>
+<li>主机B的TCP服务器进程先创建传输控制块TCB，此时处于LISTEN状态，等待客户的连接请求。</li>
+<li>主机A的TCP客户进程也会先创建传输控制块TCB，当想要建立连接时，客户端的TCP先会向服务器端发送一个连接请求报文段(SYN 报文段)，这个报文段不包含应用层数据，但是会将报文段首部的标志位SYN=1，然后随机选择一个初始序号seq=x，此时TCP客户进程进入SYN-SENT状态。</li>
+<li>主机B收到连接请求报文段，为该TCP连接分配TCP缓存和变量，并向客户进程发送允许连接报文段(SYNACK 报文段)，这个报文段也不包含应用层数据，但是会将报文段首部的标志位SYN=1，ACK=1，(确认号)ack=x+1,，然后选择一个初始序号seq = y，此时TCP服务器进程进入SYN-RCVD状态。</li>
+<li>主机A收到允许连接请求报文段，为该TCP连接分配缓存和变量，并向服务器进程发送一个报文段，这个报文段是对服务器允许连接的报文段的确认。该报文段是可以携带应用层数据的，并且报文段首部的标志位SYN=0，ACK=1，ack=y+1，seq=x+1，此时TCP客户进程进入ESTABLISHED(已建立连接)状态。</li>
+<li>服务器进程收到客户进程的确认报文段后，进入ESTABLISHED状态。</li>
+</ol>
+<p>至此两个主机的连接建立完成，客户和服务器主机就可以互相发送包括数据的报文段了，以后的每一个报文段的SYN都会被设置为0。</p>
+<p>天下无不散之宴席，TCP连接也是如此，参与一个连接的两个进程，任意一个都可以终止该连接，连接结束之后主机中参与连接的“资源”–缓存和变量都会释放。那再让我们看看TCP连接时如何释放的。</p>
+<img src="https://img.rruu.net/image/5fcaf38c099ba" alt="picture" title="四次握手" style="zoom:50%;" />
+<p>此时客户进程和服务器进程都是处于ESTABLISHED状态。</p>
+<ol>
+<li>当主机A的TCP客户进程要结束连接时，先向主机B的服务器进程发送连接释放报文段，这个报文段首部的标志位FIN=1，seq=u（这里的序号是已发送数据的最后一个字节的序号加一），并停止发送数据，此时客户进程进入FIN-WAIT-1状态。</li>
+<li>当主机B的TCP服务器进程收到连接释放报文段后，立即发送确认报文段，这个报文段首部的标志位ACK=1，ack=u+1，seq=v，但是可以继续发送未发送完的数据，此时服务器进程进入CLOSE-WAIT状态。</li>
+<li>当主机A的TCP客户进程收到了确认报文段后，进入FIN-WAIT-2状态，等待主机B发送的连接释放报文段。</li>
+<li>当主机B没有要向A发送的数据后，其服务器进程就会通知TCP发送连接释放报文段，这个报文段首部的标志位FIN=1，ACK=1，seq=w，ack=u+1,这时服务器进程进入LAST-ACK状态。</li>
+<li>当主机A收到来自主机B的连接释放报文段后，理解发送确认报文段，这个报文段首部的标志位ACK=1，seq=u+1，ack=w+1，此时TCP客户进程进入TIME-WAIT状态，等待2MSL的时间后进入CLOSED状态，如果再次收到来自主机B的连接释放报文段，重新发送确认报文段，然后再等待2MSL，注意在TIME-WAIT状态时，连接并没有释放掉。</li>
+<li>当主机B收到主机A的确认报文段后，立即进入CLOSED状态。如果超时则重新发送连接释放报文段。</li>
+</ol>
+<p>至此TCP连接的释放也就完成了，在整个TCP连接的建立和释放中，连接建立时一共发送了三个报文段，因此被称为“三次握手”，而连接释放时一共发送了四个报文段，因而被称为“四次握手”。</p>
+<p>有关序号(seq)和确认号(ack)：</p>
+<ul>
+<li><strong>序号</strong>是TCP报文段的一个字段，TCP把数据看成无结构、有序的字节流，而序号就是建立在这样的字节流上的，不是建立在传送的报文段的序列上的。因此一个报文段的序号就是该报文段首字节的字节流编号。举一个例子，假如数据流是由一个500 000字节的文件组成，其MSS的大小为1000字节，数据流的首字节的标号为0，那么TCP为该数据流构建500个报文段，其中第一个报文段的序号为0，第二个报文段的序号为1000，以此类推。</li>
+<li><strong>确认号</strong>是也是TCP报文段的一个字段，TCP是全双工的，当主机A给主机B发送数据的同时，也可能会收到来自主机B的数据，**主机A填入报文段中的确认号是希望从主机B收到下一个字节的序号。**假设主机A收到了来自主机B的编号为0~535的所有字节，同时主机A有准备给主机B发送一个报文段，那么就会在给主机B发送的这个报文段中填上确认号534。</li>
+</ul>
+<img src="https://img.rruu.net/image/5fcaf38c0b54a" alt="picture" title="文件数据划分为TCP报文段" style="zoom:50%;" />
+<blockquote>
+<p>文章参考自《计算机网络》第七版–谢希仁——5.9.2 TCP连接释放<br />
+《计算机网络：自顶向下方法》7th——3.5.6TCP连接管理</p>
+</blockquote>
+</div><footer class="post-footer"><div class="post-ending ending"><div class="ending__text">------ 本文结束，感谢您的阅读 ------</div></div><nav class="post-paginator paginator"><div class="paginator-next"><a class="paginator-next__link" href="/2020/08/31/2020-8-31-Binomial/"><span class="paginator-prev__text">有关二项分布和二项式系数</span><span class="paginator-next__icon"><i class="fas fa-angle-right"></i></span></a></div></nav></footer></div></div></div><div class="sidebar-wrap" id="sidebar-wrap"><aside class="sidebar" id="sidebar"><div class="sidebar-nav"><span class="sidebar-nav-toc current">文章目录</span><span class="sidebar-nav-ov">站点概览</span></div><section class="sidebar-toc"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#tcp的三次握手和四次握手"><span class="toc-number">1.</span> <span class="toc-text">
+          tcp的三次握手和四次握手</span></a></li></ol></section><!-- ov = overview--><section class="sidebar-ov hide"><div class="sidebar-ov-author"><div class="sidebar-ov-author__avatar"><img class="sidebar-ov-author__avatar_img" src="/images/icons/stun-logo.svg" alt="avatar"></div><p class="sidebar-ov-author__text">唯心所现，唯识所变</p></div><div class="sidebar-ov-social"><a class="sidebar-ov-social-item" href="https://github.com/JxuFang" target="_blank" rel="noopener" data-popover="Github" data-popover-pos="up"><span class="sidebar-ov-social-item__icon"><i class="fab fa-github"></i></span></a><a class="sidebar-ov-social-item" href="https://www.zhihu.com/people/du-lu-lu-83-42" target="_blank" rel="noopener" data-popover="知乎" data-popover-pos="up"><span class="sidebar-ov-social-item__icon">知</span></a></div><div class="sidebar-ov-state"><a class="sidebar-ov-state-item sidebar-ov-state-item--posts" href="/archives/"><div class="sidebar-ov-state-item__count">5</div><div class="sidebar-ov-state-item__name">归档</div></a><a class="sidebar-ov-state-item sidebar-ov-state-item--categories" href="/categories/"><div class="sidebar-ov-state-item__count">0</div><div class="sidebar-ov-state-item__name">分类</div></a><a class="sidebar-ov-state-item sidebar-ov-state-item--tags" href="/tags/"><div class="sidebar-ov-state-item__count">0</div><div class="sidebar-ov-state-item__name">标签</div></a></div></section><div class="sidebar-reading"><div class="sidebar-reading-info"><span class="sidebar-reading-info__text">你已阅读了 </span><span class="sidebar-reading-info__num">0</span></div><div class="sidebar-reading-line"></div></div></aside></div><div class="clearfix"></div></div></main><footer class="footer" id="footer"><div class="footer-inner"><div><span>Copyright © 2020</span><span class="footer__icon"><i class="fas fa-heart"></i></span><span>房金旭</span></div><div><span>由 <a href="http://hexo.io/" title="Hexo" target="_blank" rel="noopener">Hexo</a> 强力驱动</span><span> v4.2.1</span><span class="footer__devider">|</span><span>主题 - <a href="https://github.com/liuyib/hexo-theme-stun/" title="Stun" target="_blank" rel="noopener">Stun</a></span><span> v2.1.1</span></div><div></div></div></footer><div class="loading-bar" id="loading-bar"><div class="loading-bar__progress"></div></div><div class="back2top" id="back2top"><span class="back2top__icon"><i class="fas fa-rocket"></i></span></div></div><script src="https://cdn.jsdelivr.net/npm/jquery@v3.4.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.ui.min.js"></script><link href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" rel="stylesheet" type="text/css"><link href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/copy-tex.css" rel="stylesheet" type="text/css"><script src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/copy-tex.min.js"></script><script src="/js/utils.js?v=2.1.1"></script><script src="/js/stun-boot.js?v=2.1.1"></script><script src="/js/scroll.js?v=2.1.1"></script><script src="/js/header.js?v=2.1.1"></script><script src="/js/sidebar.js?v=2.1.1"></script></body></html>

@@ -1,0 +1,342 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="format-detection" content="telephone=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><link rel="icon" href="/images/icons/favicon-16x16.png?v=2.1.1" type="image/png" sizes="16x16"><link rel="icon" href="/images/icons/favicon-32x32.png?v=2.1.1" type="image/png" sizes="32x32"><meta name="description" content="昨天在看的algorithm-base时候看到作者用的图片链接中是https:&#x2F;&#x2F;www.jsdelivr.com&#x2F;gh&#x2F;...就好奇搜索了一下，发现原来可以使用GitHub+jsDelivr+PicGo来搭建一个图床。本想着自己也用不到图床，反正文章都是上传到语雀上面。但是今天在leetcode做题时，想要写一个题解（还是在ppt上画了老半天的图），结果leetcode上面不能上传图片，看来就只">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GitHub+jsDelivr搭建图床">
+<meta property="og:url" content="http://yoursite.com/2021/08/12/GitHub+jsDelivr%E6%90%AD%E5%BB%BA%E5%9B%BE%E5%BA%8A/index.html">
+<meta property="og:site_name" content="小旭的博客">
+<meta property="og:description" content="昨天在看的algorithm-base时候看到作者用的图片链接中是https:&#x2F;&#x2F;www.jsdelivr.com&#x2F;gh&#x2F;...就好奇搜索了一下，发现原来可以使用GitHub+jsDelivr+PicGo来搭建一个图床。本想着自己也用不到图床，反正文章都是上传到语雀上面。但是今天在leetcode做题时，想要写一个题解（还是在ppt上画了老半天的图），结果leetcode上面不能上传图片，看来就只">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/JxuFang/image@master/blog/1628587571744-13b95c14-07a8-4efa-9484-d608c66ba88f.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/JxuFang/image@master/blog/1628594005901-7269e41c-4a18-4f83-b719-756e4798ed68.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/JxuFang/image@master/blog/1628594227248-65152815-c84f-48c2-a3d5-a717d8fba4f8.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/JxuFang/image@master/blog/1628594342407-54ea612e-58e1-4951-b93b-97e3a268dc2e.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/JxuFang/image@master/blog/1628594748299-f0c5052e-6db2-4f44-ac3e-8bc129e2c09f.png">
+<meta property="og:image" content="http://yoursite.com/2021/08/12/GitHub+jsDelivr%E6%90%AD%E5%BB%BA%E5%9B%BE%E5%BA%8A/images/GitHub+jsDelivr%E6%90%AD%E5%BB%BA%E5%9B%BE%E5%BA%8A.assets/1628595754598-812ae538-a6ad-4bf2-bce2-41790e879e01.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/JxuFang/image@master/blog/1628595615287-57877410-929b-4ae1-97b1-c3effc01f1f2.png">
+<meta property="article:published_time" content="2021-08-12T11:57:04.832Z">
+<meta property="article:modified_time" content="2021-08-13T00:55:38.811Z">
+<meta property="article:author" content="房金旭">
+<meta property="article:tag" content="图床">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/JxuFang/image@master/blog/1628587571744-13b95c14-07a8-4efa-9484-d608c66ba88f.png"><title>GitHub+jsDelivr搭建图床 | 小旭的博客</title><link ref="canonical" href="http://yoursite.com/2021/08/12/GitHub+jsDelivr%E6%90%AD%E5%BB%BA%E5%9B%BE%E5%BA%8A/"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.12.1/css/all.min.css" type="text/css"><link rel="stylesheet" href="/css/index.css?v=2.1.1"><script>var Stun = window.Stun || {};
+var CONFIG = {
+  root: '/',
+  algolia: undefined,
+  fontIcon: {"prompt":{"success":"fas fa-check-circle","info":"fas fa-arrow-circle-right","warning":"fas fa-exclamation-circle","error":"fas fa-times-circle"},"copyBtn":"fas fa-copy"},
+  sidebar: {"offsetTop":"20px","tocMaxDepth":6},
+  header: {"enable":true,"showOnPost":false,"scrollDownIcon":true},
+  postWidget: {"endText":true},
+  nightMode: {"enable":true},
+  back2top: {"enable":true},
+  codeblock: {"style":"default","highlight":"light","wordWrap":false},
+  reward: false,
+  fancybox: false,
+  zoomImage: {"gapAside":"20px"},
+  galleryWaterfall: undefined,
+  lazyload: false,
+  pjax: undefined,
+  externalLink: {"icon":{"enable":true,"name":"fas fa-external-link-alt"}},
+  shortcuts: undefined,
+  prompt: {"copyButton":"复制","copySuccess":"复制成功","copyError":"复制失败"},
+  sourcePath: {"js":"js","css":"css","images":"images"},
+};
+
+window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 4.2.1"></head><body><div class="container" id="container"><header class="header" id="header"><div class="header-inner header-inner--height header-inner--bgcolor"><nav class="header-nav header-nav--sticky"><div class="header-nav-inner"><div class="header-nav-menubtn"><i class="fas fa-bars"></i></div><div class="header-nav-menu"><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/"><span class="header-nav-menu-item__icon"><i class="fas fa-home"></i></span><span class="header-nav-menu-item__text">首页</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/archives/"><span class="header-nav-menu-item__icon"><i class="fas fa-folder-open"></i></span><span class="header-nav-menu-item__text">归档</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/categories/"><span class="header-nav-menu-item__icon"><i class="fas fa-layer-group"></i></span><span class="header-nav-menu-item__text">分类</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/tags/"><span class="header-nav-menu-item__icon"><i class="fas fa-tags"></i></span><span class="header-nav-menu-item__text">标签</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/reading/"><span class="header-nav-menu-item__icon"><i class="fas fa-book"></i></span><span class="header-nav-menu-item__text">阅读</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/about/"><span class="header-nav-menu-item__icon"><i class="fas fa-fingerprint"></i></span><span class="header-nav-menu-item__text">关于</span></a></div></div><div class="header-nav-search"><span class="header-nav-search__icon"><i class="fas fa-search"></i></span><span class="header-nav-search__text">搜索</span></div><div class="header-nav-mode"><div class="mode"><div class="mode-track"><span class="mode-track-moon"></span><span class="mode-track-sun"></span></div><div class="mode-thumb"></div></div></div></div></nav></div></header><main class="main" id="main"><div class="main-inner"><div class="content-wrap" id="content-wrap"><div class="content" id="content"><!-- Just used to judge whether it is an article page--><div id="is-post"></div><div class="post"><header class="post-header"><h1 class="post-title">GitHub+jsDelivr搭建图床</h1><div class="post-meta"><span class="post-meta-item post-meta-item--createtime"><span class="post-meta-item__icon"><i class="far fa-calendar-plus"></i></span><span class="post-meta-item__info">发表于</span><span class="post-meta-item__value">2021-08-12</span></span><span class="post-meta-item post-meta-item--updatetime"><span class="post-meta-item__icon"><i class="far fa-calendar-check"></i></span><span class="post-meta-item__info">更新于</span><span class="post-meta-item__value">2021-08-13</span></span><span class="post-meta-item post-meta-item--wordcount"><span class="post-meta-item__icon"><i class="far fa-file-word"></i></span><span class="post-meta-item__info">字数统计</span><span class="post-meta-item__value">511</span></span><span class="post-meta-item post-meta-item--readtime"><span class="post-meta-item__icon"><i class="far fa-clock"></i></span><span class="post-meta-item__info">阅读时长</span><span class="post-meta-item__value">3分</span></span></div></header><div class="post-body"><p>昨天在看的<code>algorithm-base</code>时候看到作者用的图片链接中是<code>https://www.jsdelivr.com/gh/...</code>就好奇搜索了一下，发现原来可以使用<code>GitHub+jsDelivr+PicGo</code>来搭建一个图床。本想着自己也用不到图床，反正文章都是上传到语雀上面。但是今天在leetcode做题时，想要写一个题解（还是在ppt上画了老半天的图），结果leetcode上面不能上传图片，看来就只能使用图床了。下面就简单介绍一下怎么搭建的步骤吧，网上其实已经有很多的教程了。</p>
+<a id="more"></a>
+
+        <h2 id="1在github上面创建一个新的repository"   >
+          <a href="#1在github上面创建一个新的repository" class="heading-link"><i class="fas fa-link"></i></a>1.在github上面创建一个新的repository</h2>
+      
+<p><img src="https://cdn.jsdelivr.net/gh/JxuFang/image@master/blog/1628587571744-13b95c14-07a8-4efa-9484-d608c66ba88f.png" alt="image.png" /></p>
+
+        <h2 id="2生成个人访问令牌token"   >
+          <a href="#2生成个人访问令牌token" class="heading-link"><i class="fas fa-link"></i></a>2.生成个人访问令牌Token</h2>
+      
+<ol>
+<li>进入<code>Settings</code></li>
+<li>点击<code>developer settings</code></li>
+<li>点击<code>Personal access tokens</code></li>
+</ol>
+<p><img src="https://cdn.jsdelivr.net/gh/JxuFang/image@master/blog/1628594005901-7269e41c-4a18-4f83-b719-756e4798ed68.png" alt="image.png" /><br />
+然后填写相应的信息<br />
+<img src="https://cdn.jsdelivr.net/gh/JxuFang/image@master/blog/1628594227248-65152815-c84f-48c2-a3d5-a717d8fba4f8.png" alt="image.png" /><br />
+最后生成Token，记得保存，只会保留一次<br />
+<img src="https://cdn.jsdelivr.net/gh/JxuFang/image@master/blog/1628594342407-54ea612e-58e1-4951-b93b-97e3a268dc2e.png" alt="image.png" /></p>
+
+        <h2 id="3下载和配置picgo"   >
+          <a href="#3下载和配置picgo" class="heading-link"><i class="fas fa-link"></i></a>3.下载和配置PicGo</h2>
+      
+<p><span class="exturl"><a class="exturl__link"   href="https://github.com/Molunerfinn/PicGo/releases"  target="_blank" rel="noopener">下载地址</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span></p>
+<ol>
+<li>先安装插件<code>github-puls</code>，该插件是用来将图片上传到gitee或github上，比自带的github图床方便(自带的没有办法删除远程记录)</li>
+<li>到图床设置中找到githubpuls先进行配置</li>
+</ol>
+<p><img src="https://cdn.jsdelivr.net/gh/JxuFang/image@master/blog/1628594748299-f0c5052e-6db2-4f44-ac3e-8bc129e2c09f.png" alt="image.png" /></p>
+<blockquote>
+<p>repo: 就是刚才创建的github仓库<br />
+branch: 分支，默认时master，也可以是其他的分支<br />
+token: 刚才从github上生成的<br />
+path: 仓库下的路径（需要现在仓库中创建相应的文件夹）<strong>要清楚文件夹和文件的路径区别</strong>​<br />
+customUrl: 自定义路径，这里我们使用jsDelivr免费的CND为我们进行加速<br />
+orgin: 所要上传的地址，这里我们是github</p>
+</blockquote>
+<p>jsDelivr的格式：<code>https://cdn.jsdelivr.net/gh/user/repo@version/file</code><br />
+官网上都有介绍: <span class="exturl"><a class="exturl__link"   href="https://www.jsdelivr.com/"  target="_blank" rel="noopener">jsDelivr</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span><br />
+<img src="images/GitHub+jsDelivr%E6%90%AD%E5%BB%BA%E5%9B%BE%E5%BA%8A.assets/1628595754598-812ae538-a6ad-4bf2-bce2-41790e879e01.png" alt="image.png" /></p>
+<ol start="3">
+<li>配置完成后就可以进行上传了</li>
+</ol>
+<p>在上传区选择githubPuls就可以上传<br />
+<img src="https://cdn.jsdelivr.net/gh/JxuFang/image@master/blog/1628595615287-57877410-929b-4ae1-97b1-c3effc01f1f2.png" alt="image.png" /></p>
+<blockquote>
+<p>某分支和版本号大小不能超过50M会直接被jsDelivr屏蔽。所以单某个分支接近临界值，换分支继续就得了。</p>
+</blockquote>
+<blockquote>
+<p>参考博客：<br />
+<span class="exturl"><a class="exturl__link"   href="https://jxiaow.gitee.io/posts/2513fba4/"  target="_blank" rel="noopener">PicGo搭建github图床</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span><br />
+<span class="exturl"><a class="exturl__link"   href="http://blog.wya1.com/article/636697030/details/21238"  target="_blank" rel="noopener">jsdriver-github打造永久免费加速的图床</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span><br />
+<span class="exturl"><a class="exturl__link"   href="https://www.cnblogs.com/starry-skys/p/13905766.html"  target="_blank" rel="noopener">教你如何使用github+jsDelivr搭建免费图床</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span></p>
+</blockquote>
+</div><footer class="post-footer"><div class="post-ending ending"><div class="ending__text">------ 本文结束，感谢您的阅读 ------</div></div><div class="post-tags"><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://yoursite.com/tags/%E5%9B%BE%E5%BA%8A/">图床</a></span></div><nav class="post-paginator paginator"><div class="paginator-prev"><a class="paginator-prev__link" href="/2021/08/12/Git%E4%B8%AD%E5%85%B3%E4%BA%8ELF%E5%92%8CCRLF%E8%BD%AC%E6%8D%A2%E9%97%AE%E9%A2%98/"><span class="paginator-prev__icon"><i class="fas fa-angle-left"></i></span><span class="paginator-prev__text">Git中关于LF和CRLF转换问题</span></a></div><div class="paginator-next"><a class="paginator-next__link" href="/2020/12/13/2020-12-13-tensorflow%E4%B8%AD%E7%9A%84asix%E7%90%86%E8%A7%A3/"><span class="paginator-prev__text">tensorflow中的asix理解</span><span class="paginator-next__icon"><i class="fas fa-angle-right"></i></span></a></div></nav></footer></div></div></div><div class="sidebar-wrap" id="sidebar-wrap"><aside class="sidebar" id="sidebar"><div class="sidebar-nav"><span class="sidebar-nav-toc current">文章目录</span><span class="sidebar-nav-ov">站点概览</span></div><section class="sidebar-toc"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1在github上面创建一个新的repository"><span class="toc-text">
+          1.在github上面创建一个新的repository</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2生成个人访问令牌token"><span class="toc-text">
+          2.生成个人访问令牌Token</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3下载和配置picgo"><span class="toc-text">
+          3.下载和配置PicGo</span></a></li></ol></section><!-- ov = overview--><section class="sidebar-ov hide"><div class="sidebar-ov-author"><div class="sidebar-ov-author__avatar"><img class="sidebar-ov-author__avatar_img" src="/images/icons/stun-logo.svg" alt="avatar"></div><p class="sidebar-ov-author__text">write code and love life</p></div><div class="sidebar-ov-social"><a class="sidebar-ov-social-item" href="https://github.com/JxuFang" target="_blank" rel="noopener" data-popover="Github" data-popover-pos="up"><span class="sidebar-ov-social-item__icon"><i class="fab fa-github"></i></span></a><a class="sidebar-ov-social-item" href="https://www.zhihu.com/people/du-lu-lu-83-42" target="_blank" rel="noopener" data-popover="知乎" data-popover-pos="up"><span class="sidebar-ov-social-item__icon">知</span></a><a class="sidebar-ov-social-item" href="https://www.yuque.com/xiaoxu-blog" target="_blank" rel="noopener" data-popover="语雀" data-popover-pos="up"><span class="sidebar-ov-social-item__icon">语</span></a></div><div class="sidebar-ov-state"><a class="sidebar-ov-state-item sidebar-ov-state-item--posts" href="/archives/"><div class="sidebar-ov-state-item__count">9</div><div class="sidebar-ov-state-item__name">归档</div></a><a class="sidebar-ov-state-item sidebar-ov-state-item--categories" href="/categories/"><div class="sidebar-ov-state-item__count">8</div><div class="sidebar-ov-state-item__name">分类</div></a><a class="sidebar-ov-state-item sidebar-ov-state-item--tags" href="/tags/"><div class="sidebar-ov-state-item__count">9</div><div class="sidebar-ov-state-item__name">标签</div></a></div></section><div class="sidebar-reading"><div class="sidebar-reading-info"><span class="sidebar-reading-info__text">你已阅读了 </span><span class="sidebar-reading-info__num">0</span></div><div class="sidebar-reading-line"></div></div></aside></div><div class="clearfix"></div></div></main><footer class="footer" id="footer"><div class="footer-inner"><div><span>Copyright © 2021</span><span class="footer__icon"><i class="fas fa-heart"></i></span><span>房金旭</span></div><div><span>由 <a href="http://hexo.io/" title="Hexo" target="_blank" rel="noopener">Hexo</a> 强力驱动</span><span> v4.2.1</span><span class="footer__devider">|</span><span>主题 - <a href="https://github.com/liuyib/hexo-theme-stun/" title="Stun" target="_blank" rel="noopener">Stun</a></span><span> v2.1.1</span></div><div></div></div></footer><div class="loading-bar" id="loading-bar"><div class="loading-bar__progress"></div></div><div class="back2top" id="back2top"><span class="back2top__icon"><i class="fas fa-rocket"></i></span></div></div><div class="search-mask"></div><div class="search-popup"><span class="search-close"></span><div class="search-input"><input placeholder="搜索文章（支持多关键词，请用空格分隔）"></div><div class="search-results"></div></div><script src="https://cdn.jsdelivr.net/npm/jquery@v3.4.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.ui.min.js"></script><script>function initSearch() {
+  var isXML = true;
+  var search_path = 'search.json';
+
+  if (!search_path) {
+    search_path = 'search.xml';
+  } else if (/json$/i.test(search_path)) {
+    isXML = false;
+  }
+
+  var path = '/' + search_path;
+  $.ajax({
+    url: path,
+    dataType: isXML ? 'xml' : 'json',
+    async: true,
+    success: function (res) {
+      var datas = isXML ? $('entry', res).map(function () {
+        // 将 XML 转为 JSON
+        return {
+          title: $('title', this).text(),
+          content: $('content', this).text(),
+          url: $('url', this).text()
+        };
+      }).get() : res;
+      var $input = $('.search-input input');
+      var $result = $('.search-results');
+      // 搜索对象（标题、内容）的权重，影响显示顺序
+      var WEIGHT = { title: 100, content: 1 };
+      var searchPost = function () {
+        var searchText = $input.val().toLowerCase().trim();
+        // 根据空白字符分隔关键字
+        var keywords = searchText.split(/[\s]+/);
+        // 搜索结果
+        var matchPosts = [];
+
+        // 有多个关键字时，将原文字整个保存下来
+        if (keywords.length > 1) {
+          keywords.push(searchText);
+        }
+        // 防止未输入字符时搜索
+        if (searchText.length > 0) {
+          datas.forEach(function (data) {
+            var isMatch  = false;
+            // 没有标题的文章使用预设的 i18n 变量代替
+            var title = (data.title && data.title.trim()) || '[ 文章无标题 ]';
+            var titleLower = title && title.toLowerCase();
+            // 删除 HTML 标签 和 所有空白字符
+            var content = data.content && data.content.replace(/<[^>]+>/g, '');
+            var contentLower = content && content.toLowerCase();
+            // 删除重复的 /
+            var postURL = data.url && decodeURI(data.url).replace(/\/{2,}/g, '/');
+            // 标题中匹配到的关键词
+            var titleHitSlice = [];
+            // 内容中匹配到的关键词
+            var contentHitSlice = [];
+
+            keywords.forEach(function (keyword) {
+              /**
+              * 获取匹配的关键词的索引
+              * @param {String} keyword 要匹配的关键字
+              * @param {String} text 原文字
+              * @param {Boolean} caseSensitive 是否区分大小写
+              * @param {Number} weight 匹配对象的权重。权重大的优先显示
+              * @return {Array}
+              */
+              function getIndexByword (word, text, caseSensitive, weight) {
+                if (!word || !text) {
+                  return [];
+                };
+
+                var startIndex = 0; // 每次匹配的开始索引
+                var index = -1;     // 匹配到的索引值
+                var result = [];    // 匹配结果
+
+                if (!caseSensitive) {
+                  word = word.toLowerCase();
+                  text = text.toLowerCase();
+                }
+
+                while((index = text.indexOf(word, startIndex)) !== -1) {
+                  var hasMatch = false;
+                  // 索引位置相同的关键词，保留长度较长的
+                  titleHitSlice.forEach(function (hit) {
+                    if (hit.index === index && hit.word.length < word.length) {
+                      hit.word = word;
+                      hasMatch = true;
+                    }
+                  });
+                  startIndex = index + word.length;
+                  !hasMatch && result.push({ index: index, word: word, weight: weight });
+                }
+                return result;
+              }
+              titleHitSlice = titleHitSlice.concat(getIndexByword(keyword, titleLower, false, WEIGHT.title));
+              contentHitSlice = contentHitSlice.concat(getIndexByword(keyword, contentLower, false, WEIGHT.content));
+            });
+
+            var hitTitle = titleHitSlice.length;
+            var hitContent = contentHitSlice.length;
+
+            if (hitTitle > 0 || hitContent > 0) {
+              isMatch = true;
+            }
+            if (isMatch) {
+              ;[titleHitSlice, contentHitSlice].forEach(function (hit) {
+                // 按照匹配文字的索引的递增顺序排序
+                hit.sort(function (left, right) {
+                  return left.index - right.index;
+                });
+              });
+              /**
+              * 给文本中匹配到的关键词添加标记，从而进行高亮显示
+              * @param {String} text 原文本
+              * @param {Array} hitSlice 匹配项的索引信息
+              * @param {Number} start 开始索引
+              * @param {Number} end 结束索引
+              * @return {String}
+              */
+              function highlightKeyword (text, hitSlice, start, end) {
+                if (!text || !hitSlice || !hitSlice.length) {
+                  return;
+                }
+
+                var result = '';
+                var startIndex = start;
+                var endIndex = end;
+                hitSlice.forEach(function (hit) {
+                  if (hit.index < startIndex) {
+                    return;
+                  }
+
+                  var hitWordEnd = hit.index + hit.word.length;
+                  result += text.slice(startIndex, hit.index);
+                  result += '<b>' + text.slice(hit.index, hitWordEnd) + '</b>';
+                  startIndex = hitWordEnd;
+                });
+                result += text.slice(startIndex, endIndex);
+                return result;
+              }
+
+              var postData = {};
+              // 文章总的搜索权重
+              var postWeight = titleHitSlice.length * WEIGHT.title + contentHitSlice.length * WEIGHT.content;
+              // 标记匹配关键词后的标题
+              var postTitle = highlightKeyword(title, titleHitSlice, 0, title.length) || title;
+              // 标记匹配关键词后的内容
+              var postContent;
+              // 显示内容的长度
+              var SHOW_WORD_LENGTH = 200;
+              // 命中关键词前的字符显示长度
+              var SHOW_WORD_FRONT_LENGTH = 20;
+              var SHOW_WORD_END_LENGTH = SHOW_WORD_LENGTH - SHOW_WORD_FRONT_LENGTH;
+
+              // 截取匹配的第一个字符，前后共 200 个字符来显示
+              if (contentHitSlice.length > 0) {
+                var firstIndex = contentHitSlice[0].index;
+                var start = firstIndex > SHOW_WORD_FRONT_LENGTH ? firstIndex - SHOW_WORD_FRONT_LENGTH : 0;
+                var end = firstIndex + SHOW_WORD_END_LENGTH;
+                postContent = highlightKeyword(content, contentHitSlice, start, end);
+              } else { // 未匹配到内容，直接截取前 200 个字符来显示
+                postContent = content.slice(0, SHOW_WORD_LENGTH);
+              }
+              postData.title = postTitle;
+              postData.content = postContent;
+              postData.url = postURL;
+              postData.weight = postWeight;
+              matchPosts.push(postData);
+            }
+          });
+        }
+
+        var resultInnerHtml = '';
+        if (matchPosts.length) {
+          // 按权重递增的顺序排序，使权重大的优先显示
+          matchPosts.sort(function (left, right) {
+            return right.weight - left.weight;
+          });
+          resultInnerHtml += '<ul>';
+          matchPosts.forEach(function (post) {
+            resultInnerHtml += '<li><a class="search-results-title" href="' + post.url + '">';
+            resultInnerHtml += post.title;
+            resultInnerHtml += '</a><div class="search-results-content">';
+            resultInnerHtml += post.content;
+            resultInnerHtml += '</div></li>';
+          });
+          resultInnerHtml += '</ul>';
+        } else {
+          resultInnerHtml += '<div class="search-results-none"><i class="far fa-meh"></i></div>';
+        }
+        $result.html(resultInnerHtml);
+      };
+      $input.on('input', searchPost);
+      $input.on('keyup', function (e) {
+        if (e.keyCode === Stun.utils.codeToKeyCode('Enter')) {
+          searchPost();
+        }
+      });
+    }
+  });
+}
+
+function closeSearch () {
+  $('body').css({ overflow: 'auto' });
+  $('.search-popup').css({ display: 'none' });
+  $('.search-mask').css({ display: 'none' });
+}
+
+window.addEventListener('DOMContentLoaded', function () {
+  Stun.utils.pjaxReloadLocalSearch = function () {
+    $('.header-nav-search').on('click', function (e) {
+      e.stopPropagation();
+      $('body').css('overflow', 'hidden');
+      $('.search-popup')
+        .velocity('stop')
+        .velocity('transition.expandIn', {
+          duration: 300,
+          complete: function () {
+            $('.search-popup input').focus();
+          }
+        });
+      $('.search-mask')
+        .velocity('stop')
+        .velocity('transition.fadeIn', {
+          duration: 300
+        });
+
+      initSearch();
+    });
+    $('.search-mask, .search-close').on('click', function () {
+      closeSearch();
+    });
+    $(document).on('keydown', function (e) {
+      // Escape <=> 27
+      if (e.keyCode === Stun.utils.codeToKeyCode('Escape')) {
+        closeSearch();
+      }
+    });
+  };
+
+  Stun.utils.pjaxReloadLocalSearch();
+}, false);</script><link href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" rel="stylesheet" type="text/css"><link href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/copy-tex.css" rel="stylesheet" type="text/css"><script src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/copy-tex.min.js"></script><script src="/js/utils.js?v=2.1.1"></script><script src="/js/stun-boot.js?v=2.1.1"></script><script src="/js/scroll.js?v=2.1.1"></script><script src="/js/header.js?v=2.1.1"></script><script src="/js/sidebar.js?v=2.1.1"></script><script type="application/json" src="/search.json"></script></body></html>
